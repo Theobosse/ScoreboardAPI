@@ -11,8 +11,7 @@ import java.util.ArrayList;
 public class TScoreboard {
 
     private final ScoreboardManager manager;
-    private final ScoreboardTitle title;
-    private final ScoreboardLines lines;
+    private final ScoreboardData data;
     private final Player player;
     private final String name;
 
@@ -21,7 +20,7 @@ public class TScoreboard {
     private Scoreboard board;
 
 
-    public TScoreboard(String name, ScoreboardTitle title, ScoreboardLines lines, Player player, int refreshDelay) {
+    public TScoreboard(String name, ScoreboardData data, Player player, int refreshDelay) {
         this.manager = Bukkit.getScoreboardManager();
         this.player = player;
         this.name = name;
@@ -29,15 +28,13 @@ public class TScoreboard {
         assert manager != null;
         this.board = manager.getMainScoreboard();
         if (board.getObjective(name) == null)
-            this.objective = board.registerNewObjective(name, "dummy", title.getTitle(player));
+            this.objective = board.registerNewObjective(name, "dummy", data.getTitle(player));
         else this.objective = board.getObjective(name);
 
         assert objective != null;
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
         Scoreboards.addScoreboard(this);
-
-        this.title = title;
-        this.lines = lines;
+        this.data = data;
 
         new BukkitRunnable() {
             @Override
@@ -71,8 +68,8 @@ public class TScoreboard {
         for (String entry : board.getEntries())
             board.resetScores(entry);
 
-        objective.setDisplayName(title.getTitle(player));
-        ArrayList<String> l = lines.getLines(player);
+        objective.setDisplayName(data.getTitle(player));
+        ArrayList<String> l = data.getLines(player);
         for (int i = 0; i < l.size(); i++) {
             Score score = objective.getScore(l.get(i));
             score.setScore(l.size() - (i + 1));
