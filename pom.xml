@@ -6,7 +6,6 @@
     <groupId>fr.theobosse</groupId>
     <version>1.1</version>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>ScoreboardAPI</artifactId>
          
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
