@@ -13,23 +13,21 @@ public class TScoreboard {
     private final ScoreboardManager manager;
     private final ScoreboardData data;
     private final Player player;
-    private final String name;
 
     private boolean cancel = false;
     private Objective objective;
     private Scoreboard board;
 
 
-    public TScoreboard(String name, ScoreboardData data, Player player, int refreshDelay) {
+    public TScoreboard(ScoreboardData data, Player player, int refreshDelay) {
         this.manager = Bukkit.getScoreboardManager();
         this.player = player;
-        this.name = name;
 
         assert manager != null;
-        this.board = manager.getMainScoreboard();
-        if (board.getObjective(name) == null)
-            this.objective = board.registerNewObjective(name, "dummy", data.getTitle(player));
-        else this.objective = board.getObjective(name);
+        this.board = manager.getNewScoreboard();
+        if (board.getObjective(player.getName()) == null)
+            this.objective = board.registerNewObjective(player.getName(), "dummy", data.getTitle(player));
+        else this.objective = board.getObjective(player.getName());
 
         assert objective != null;
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);

@@ -4,14 +4,10 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 
-public class ScoreboardData {
+public interface ScoreboardData {
 
-    public String getTitle(Player player) {
-        return "null";
-    }
+    public abstract String getTitle(Player player);
 
-    public ArrayList<String> getLines(Player player) {
-        return new ArrayList<>();
-    }
+    public abstract ArrayList<String> getLines(Player player);
 
 }
