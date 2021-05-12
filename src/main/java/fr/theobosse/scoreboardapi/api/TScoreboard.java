@@ -93,7 +93,13 @@ public class TScoreboard {
             board.resetScores(entry);
 
         if (color != null) {
-            Team team = board.getTeam("TEAM");
+            Team team;
+            if (board.getTeam("TEAM") == null) {
+                team = board.registerNewTeam("TEAM");
+                team.addPlayer(player);
+            } else {
+                team = board.getTeam("TEAM");
+            }
             team.setColor(color);
         }
 
