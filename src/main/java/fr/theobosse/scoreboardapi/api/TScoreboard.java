@@ -2,6 +2,7 @@ package fr.theobosse.scoreboardapi.api;
 
 import fr.theobosse.scoreboardapi.ScoreboardAPI;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.*;
@@ -17,6 +18,7 @@ public class TScoreboard {
     private boolean cancel = false;
     private Objective objective;
     private Scoreboard board;
+    private ChatColor color;
 
 
     public TScoreboard(ScoreboardData data, Player player, int refreshDelay) {
@@ -49,6 +51,26 @@ public class TScoreboard {
         return board;
     }
 
+    public ChatColor getColor() {
+        return color;
+    }
+
+    public Objective getObjective() {
+        return objective;
+    }
+
+    public ScoreboardData getData() {
+        return data;
+    }
+
+    public Scoreboard getBoard() {
+        return board;
+    }
+
+    public ScoreboardManager getManager() {
+        return manager;
+    }
+
     public Player getPlayer() {
         return player;
     }
@@ -62,9 +84,18 @@ public class TScoreboard {
         this.cancel = cancel;
     }
 
+    public void setColor(ChatColor color) {
+        this.color = color;
+    }
+
     public void refresh() {
         for (String entry : board.getEntries())
             board.resetScores(entry);
+
+        if (color != null) {
+            Team team = board.getTeam("TEAM");
+            team.setColor(color);
+        }
 
         objective.setDisplayName(data.getTitle(player));
         ArrayList<String> l = data.getLines(player);
