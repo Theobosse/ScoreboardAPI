@@ -3,11 +3,14 @@ package fr.theobosse.scoreboardapi.api;
 import fr.theobosse.scoreboardapi.ScoreboardAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.*;
 
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.UUID;
 
 public class TScoreboard {
 
@@ -93,14 +96,21 @@ public class TScoreboard {
             board.resetScores(entry);
 
         if (color != null) {
-            Team team;
-            if (board.getTeam("TEAM") == null) {
-                team = board.registerNewTeam("TEAM");
-                team.addPlayer(player);
-            } else {
-                team = board.getTeam("TEAM");
+            for (Map.Entry<UUID, TScoreboard> entry : Scoreboards.getScoreboards().entrySet()) {
+                OfflinePlayer p = Bukkit.getOfflinePlayer(entry.getKey());
+                TScoreboard tsb = entry.getValue();
+                Scoreboard sb = tsb.getScoreboard();
+                Team team;
+
+                if (sb.getTeam(tsb.color.name()) == null)
+                    team = sb.registerNewTeam(tsb.color.name());
+                else team = sb.getTeam(tsb.color.name());
+
+                assert team != null;
+                team.setColor(color);
+                if (!team.getPlayers().contains(p))
+                    team.addPlayer(p);
             }
-            team.setColor(color);
         }
 
         objective.setDisplayName(data.getTitle(player));
