@@ -10,8 +10,10 @@ import org.bukkit.scoreboard.*;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
+@SuppressWarnings("deprecation")
 public class TScoreboard {
 
     private final ScoreboardManager manager;
@@ -31,7 +33,7 @@ public class TScoreboard {
         assert manager != null;
         this.board = manager.getNewScoreboard();
         if (board.getObjective(player.getName()) == null)
-            this.objective = board.registerNewObjective(player.getName(), "dummy", data.getTitle(player));
+            this.objective = board.registerNewObjective(player.getName(), "dummy");
         else this.objective = board.getObjective(player.getName());
 
         assert objective != null;
@@ -50,7 +52,6 @@ public class TScoreboard {
     }
 
     public Scoreboard getScoreboard() {
-        this.refresh();
         return board;
     }
 
@@ -88,30 +89,14 @@ public class TScoreboard {
     }
 
     public void setColor(ChatColor color) {
+        if (color != null && board.getTeam(color.name()) != null)
+            Objects.requireNonNull(board.getTeam(color.name())).removePlayer(player);
         this.color = color;
     }
 
     public void refresh() {
         for (String entry : board.getEntries())
             board.resetScores(entry);
-
-        if (color != null) {
-            for (Map.Entry<UUID, TScoreboard> entry : Scoreboards.getScoreboards().entrySet()) {
-                OfflinePlayer p = Bukkit.getOfflinePlayer(entry.getKey());
-                TScoreboard tsb = entry.getValue();
-                Scoreboard sb = tsb.getScoreboard();
-                Team team;
-
-                if (sb.getTeam(tsb.color.name()) == null)
-                    team = sb.registerNewTeam(tsb.color.name());
-                else team = sb.getTeam(tsb.color.name());
-
-                assert team != null;
-                team.setColor(color);
-                if (!team.getPlayers().contains(p))
-                    team.addPlayer(p);
-            }
-        }
 
         objective.setDisplayName(data.getTitle(player));
         ArrayList<String> l = data.getLines(player);
